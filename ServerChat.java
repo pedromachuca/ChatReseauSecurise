@@ -12,7 +12,6 @@ class ServerChat {
           while (true){
 
               new ServiceChat(serversocket.accept());
-
           }
         } catch( IOException e ) {
           System.out.println( "probleme de connexion" );
