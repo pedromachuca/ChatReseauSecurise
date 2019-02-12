@@ -2,14 +2,6 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
-/*
-/listUser
-/quit
-/SendMsg <user> <msg>
-/sendFile <user> <filename>
-/help
-/?
-*/
 public class ServiceChat extends Thread{
 
   final static int NBMAXUSER = 3;
@@ -122,8 +114,10 @@ public class ServiceChat extends Thread{
       System.out.println( "Probleme en fermant socket" );
     }
   }
-  public void sendMsg(){
+  public void sendMsg(String message){
+    messageWithoutCmd = message.split(" ");
 
+    output.println(username+" : "+messageWithoutCmd[2])
   }
   public void sendFile(){
 
@@ -143,7 +137,7 @@ public class ServiceChat extends Thread{
           quit();
           break;
         case "/sendMsg":
-          sendMsg();
+          sendMsg(message);
           break;
         case "/sendFile":
         //encoder les fichiers en base64
