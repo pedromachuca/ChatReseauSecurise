@@ -18,3 +18,12 @@ class ServerChat {
         }
     }
 }
+
+
+/*Faire l'authentification, on va remplacer la comparaison de 2 objets string avec de la cryptographie,
+login associé a clé publique premiere connexion => clé publique (récupérer dans la carte a puce, l'envoi au server qui la stoke)
+Crypto dechiffrement avec la cle privee dans la javacard
+Pour la partie chiffrement des donnes on utilisera l'algo des deja utilisé par le passé (multiple de la cle DES)
+Pour la cle RSA envoyé des données avec la mm taille que la cle.
+
+*/
