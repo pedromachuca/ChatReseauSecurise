@@ -12,6 +12,7 @@ public class ServiceChat extends Thread{
   Socket socket;
   static List<String> listUser= new ArrayList<>(NBMAXUSER);
   static List<String> listPassword= new ArrayList<>(NBMAXUSER);
+  HashMap<String, PrintStream> database = new HashMap<String, PrintStream>();
   static List<String> connectedUser= new ArrayList<>(NBMAXUSER);
 
   String username;
@@ -114,22 +115,48 @@ public class ServiceChat extends Thread{
       System.out.println( "Probleme en fermant socket" );
     }
   }
-  public void sendMsg(String message){
-    messageWithoutCmd = message.split(" ");
+  public void sendMsg(String[] message){
+    PrintStream usertosend;
+    usertosend = database.get(message[1]);
+    usertosend.print(username+" : ");
 
-    output.println(username+" : "+messageWithoutCmd[2])
+    for (int i=2;i<message.length;i++) {
+        usertosend.print(" "+message[i]);
+    }
+      usertosend.print("\n");
   }
-  public void sendFile(){
 
+  public void sendFile(String user, String fileName){
+    try{
+      File file = new File(fileName);
+      BufferedReader br;
+      String st;
+
+         br = new BufferedReader(new FileReader(file));
+        while ((st = br.readLine()) != null){
+          System.out.println(st);
+        }
+    }catch(IOException e){
+      System.out.println(e);
+    }
   }
+
   public void help(){
     output.println("Liste des commandes disponibles :\n/list : donne la liste de utilisateurs\n/quit : permet de quitter le chat\n/sendMsg <user> <msg> : pour envoyer un message prive");
     output.println("/sendFile <user> <fileName> : pour envoyer un fichier en prive\n/help : pour afficher la liste des commandes\n/? : pour afficher la liste des commandes");
   }
+  public void updatedb(){
+    for (int i = 0 ; i < listUser.size() ; i++) {
+      database.put(listUser.get(i), outputs.get(i));
+    }
+    System.out.println(database);
+  }
   public void parseMsg(String message){
+    String[] messageSplit = new String[100];
+    messageSplit = message.split(" ");
 
     if(message.startsWith("/")){
-      switch(message){
+      switch(messageSplit[0]){
         case "/list":
           list();
           break;
@@ -137,11 +164,11 @@ public class ServiceChat extends Thread{
           quit();
           break;
         case "/sendMsg":
-          sendMsg(message);
+          sendMsg(messageSplit);
           break;
         case "/sendFile":
         //encoder les fichiers en base64
-          sendFile();
+          sendFile(messageSplit[1], messageSplit[2]);
           break;
         case "/help":
           help();
@@ -158,6 +185,7 @@ public class ServiceChat extends Thread{
     }
   }
   public void mainLoop(){
+    updatedb();
     String message;
     int cmd=0;
     try{
